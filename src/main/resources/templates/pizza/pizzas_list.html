@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:insert="~{/fragments/resources :: head}">
+    <meta charset="UTF-8">
+    <title>Pizza List</title>
+</head>
+<body>
+<div class="container">
+    <nav th:insert="~{/fragments/navbar :: nav}"></nav>
+    <h1>Elenco Pizze</h1>
+    <hr>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Descrizione</th>
+            <th>Foto</th>
+            <th>Prezzo</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="pizza : ${pizzasList}">
+            <td th:text="${pizza.name}"></td>
+            <td th:text="${pizza.description}"></td>
+            <td><img alt="" height="100" src="" th:src="${pizza.imgUrl}" width="100"/></td>
+            <td th:text="|${pizza.price} euro|"></td>
+        </tr>
+        </tbody>
+    </table>
+    <div th:if="${pizzasList.isEmpty()}">
+        <p>Nessuna pizza presente</p>
+    </div>
+</div>
+
+</body>
+</html>

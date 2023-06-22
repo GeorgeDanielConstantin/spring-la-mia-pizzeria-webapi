@@ -1,0 +1,2 @@
+INSERT INTO `pizzas` (`id`, `price`, `description`, `img_url`, `name`) VALUES (1, '10', 'Fragrante', 'https://picsum.photos/200', '4 stagioni')
+INSERT INTO `pizzas` (`id`, `price`, `description`, `img_url`, `name`) VALUES (2, '6', 'Economica', 'https://picsum.photos/200', 'Margherita')
