@@ -8,7 +8,7 @@ public class IndexController {
 
     @RequestMapping("/")
 
-    @GetMapping("/")
+    @GetMapping
     public String home(Model model) {
         return "index";
     }
