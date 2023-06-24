@@ -33,7 +33,6 @@ public class PizzaController {
             pizzas = pizzaRepository.findByNameContainingIgnoreCase(searchString);
         }
 
-        // passo la lista dei libri alla view
         model.addAttribute("pizzasList", pizzas);
         model.addAttribute("searchInput", searchString == null ? "" : searchString);
         return "/pizza/pizzas_list";

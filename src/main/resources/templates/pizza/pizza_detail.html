@@ -5,7 +5,7 @@
     <title>Dettaglio Pizza</title>
 </head>
 <body>
-<nav th:replace="~{/fragments/navbar :: navbar(current='pizza')}"></nav>
+<nav th:replace="~{/fragments/navbar :: navbar(current='index')}"></nav>
 
 <div class="container" th:object="${pizza}">
     <h1 th:text="*{name}"></h1>
