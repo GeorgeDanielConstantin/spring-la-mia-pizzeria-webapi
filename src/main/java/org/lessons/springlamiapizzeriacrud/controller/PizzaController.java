@@ -1,16 +1,18 @@
 package org.lessons.springlamiapizzeriacrud.controller;
 
+import jakarta.validation.Valid;
+import org.lessons.springlamiapizzeriacrud.messages.AlertMessage;
+import org.lessons.springlamiapizzeriacrud.messages.AlertMessageType;
 import org.lessons.springlamiapizzeriacrud.model.Pizza;
 import org.lessons.springlamiapizzeriacrud.repository.PizzaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,16 +43,75 @@ public class PizzaController {
     @GetMapping("/{id}")
     public String show(@PathVariable("id") Integer id, Model model) {
 
-        Optional<Pizza> result = pizzaRepository.findById(id);
-        if (result.isPresent()) {
+        Pizza pizza = getPizzaById(id);
+        model.addAttribute("pizza", pizza);
+        return "/pizza/pizza_detail";
 
-            model.addAttribute("pizza", result.get());
-            return "/pizza/pizza_detail";
+    }
 
-        } else {
+    @GetMapping("/create")
+    public String create(Model model) {
+        model.addAttribute("pizza", new Pizza());
+        return "/pizza/pizza_edit";
+    }
 
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    "Pizza with id " + id + " not found");
+    @PostMapping("/create")
+    public String store(@Valid @ModelAttribute("pizza") Pizza formPizza,
+                        BindingResult bindingResult,
+                        RedirectAttributes redirectAttributes) {
+
+        if (bindingResult.hasErrors()) {
+            return "/pizza/pizza_edit";
         }
+        pizzaRepository.save(formPizza);
+        redirectAttributes.addFlashAttribute("message", new AlertMessage(AlertMessageType.SUCCESS, "Pizza " + formPizza.getName() + " creata!"));
+        return "redirect:/pizza";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String edit(@PathVariable Integer id, Model model) {
+
+        Pizza pizza = getPizzaById(id);
+        model.addAttribute("pizza", pizza);
+        return "pizza/pizza_edit";
+
+    }
+
+    @PostMapping("/edit/{id}")
+    public String doEdit(@PathVariable Integer id,
+                         @Valid @ModelAttribute("pizza") Pizza formPizza,
+                         BindingResult bindingResult,
+                         RedirectAttributes redirectAttributes) {
+        Pizza pizza = getPizzaById(id);
+
+
+        if (bindingResult.hasErrors()) {
+            return "/pizza/pizza_edit";
+        }
+        formPizza.setId(pizza.getId());
+        pizzaRepository.save(formPizza);
+        redirectAttributes.addFlashAttribute("message", new AlertMessage(AlertMessageType.SUCCESS, "Pizza " + formPizza.getName() + " modificata!"));
+
+        return "redirect:/pizza";
+    }
+
+    @PostMapping("/delete/{id}")
+    public String delete(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
+
+        Pizza pizza = getPizzaById(id);
+        pizzaRepository.delete(pizza);
+        redirectAttributes.addFlashAttribute("message", new AlertMessage(AlertMessageType.SUCCESS, "Pizza " + pizza.getName() + " cancellata!"));
+        return "redirect:/pizza";
+
+    }
+
+
+    private Pizza getPizzaById(Integer id) {
+        Optional<Pizza> result = pizzaRepository.findById(id);
+        if (result.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Pizza con id " + id + " non trovata");
+        }
+        return result.get();
     }
 }
