@@ -8,15 +8,60 @@
 <nav th:replace="~{/fragments/navbar :: navbar(current='index')}"></nav>
 
 <div class="container" th:object="${pizza}">
-    <h1 th:text="*{name}"></h1>
-    <h2 class="text-muted" th:text="|*{price} euro|"></h2>
-    <hr>
-    <dl>
-        <dt>Descrizione</dt>
-        <dd th:text="*{description}"></dd>
-        <dt>Immagine</dt>
-        <dd><img alt="" height="100" src="" th:src="*{imgUrl}" width="100"/></dd>
-    </dl>
+    <section>
+
+        <h1 th:text="*{name}"></h1>
+        <h2 class="text-muted" th:text="|*{price} euro|"></h2>
+        <hr>
+        <dl>
+            <dt>Descrizione</dt>
+            <dd th:text="*{description}"></dd>
+            <dt>Immagine</dt>
+            <dd><img alt="" height="100" src="" th:src="*{imgUrl}" width="100"/></dd>
+        </dl>
+    </section>
+
+    <section>
+        <h2>Sconti</h2>
+
+        <div class="my-3">
+            <a class="btn btn-primary"
+               th:href="@{/discount/create(pizzaId=${pizza.id})}">
+                Crea nuova offerta speciale</a>
+        </div>
+
+        <table class="table" th:if="${pizza.discounts.size() > 0}">
+            <thead>
+            <tr>
+                <th>Data d'inizio</th>
+                <th>Data di fine</th>
+                <th>Tipo di sconto</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="discount : ${pizza.discounts}" th:object="${discount}">
+                <td th:text="*{title}"></td>
+                <td th:text="*{#temporals.format(startDate, 'dd/MM/yyyy')}"></td>
+                <td th:text="*{#temporals.format(endDate, 'dd/MM/yyyy')}"></td>
+                <td class="d-flex align-items-center">
+                    <a class="btn btn-primary me-1" th:href="@{|/discount/edit/*{id}|}"><i
+                            class="fa-solid fa-pen-to-square"></i></a>
+                    <form
+                            method="post"
+                            th:action="@{|/discount/delete/*{id}|}"
+                    >
+                        <button class="btn btn-primary" type="submit"><i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="alert alert-info" th:unless="${pizza.discounts.size() > 0}">
+            Non ci sono offerte speciali
+        </div>
+    </section>
 </div>
 </body>
 </html>
