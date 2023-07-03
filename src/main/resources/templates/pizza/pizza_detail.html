@@ -61,6 +61,14 @@
         <div class="alert alert-info" th:unless="${pizza.discounts.size() > 0}">
             Non ci sono offerte speciali
         </div>
+
+        <div class="col-4">
+            <h3>Categories</h3>
+            <ul th:if="*{ingredients.size() > 0}">
+                <li th:each="ingredient : *{ingredients}" th:text="${ingredient.name}"></li>
+            </ul>
+            <div class="alert alert-info" th:unless="*{ingredients.size() > 0}">Nessun ingrediente</div>
+        </div>
     </section>
 </div>
 </body>

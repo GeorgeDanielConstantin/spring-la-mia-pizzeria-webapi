@@ -17,7 +17,6 @@
             th:object="${discount}"
             th:with="formAction=${discount.id != null ? '/discount/edit/'+discount.id : '/discount/create'}"
     >
-        <!-- input hidden per inviare insieme ai campi del form anche il libro -->
         <input th:field="*{pizza}" type="hidden">
         <div class="col-6">
             <label class="form-label" for="start-date">Data d'inizio</label>

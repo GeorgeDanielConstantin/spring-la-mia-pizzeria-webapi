@@ -64,6 +64,10 @@ public class DiscountController {
     public String doEdit(@PathVariable Integer id,
                          @Valid @ModelAttribute("discount") Discount formDiscount,
                          BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            return "/discount/form";
+        }
         Optional<Discount> discount = discountRepository.findById(id);
         if (discount.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);

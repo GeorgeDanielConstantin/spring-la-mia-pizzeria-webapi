@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.lessons.springlamiapizzeriacrud.messages.AlertMessage;
 import org.lessons.springlamiapizzeriacrud.messages.AlertMessageType;
 import org.lessons.springlamiapizzeriacrud.model.Pizza;
+import org.lessons.springlamiapizzeriacrud.repository.IngredientRepository;
 import org.lessons.springlamiapizzeriacrud.repository.PizzaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,9 @@ import java.util.Optional;
 public class PizzaController {
     @Autowired
     private PizzaRepository pizzaRepository;
+
+    @Autowired
+    private IngredientRepository ingredientRepository;
 
     @GetMapping
     public String list(
@@ -52,19 +56,23 @@ public class PizzaController {
     @GetMapping("/create")
     public String create(Model model) {
         model.addAttribute("pizza", new Pizza());
+        model.addAttribute("ingredientList", ingredientRepository.findAll());
         return "/pizza/pizza_edit";
     }
 
     @PostMapping("/create")
     public String store(@Valid @ModelAttribute("pizza") Pizza formPizza,
                         BindingResult bindingResult,
-                        RedirectAttributes redirectAttributes) {
+                        RedirectAttributes redirectAttributes,
+                        Model model) {
 
         if (bindingResult.hasErrors()) {
             return "/pizza/pizza_edit";
         }
         pizzaRepository.save(formPizza);
         redirectAttributes.addFlashAttribute("message", new AlertMessage(AlertMessageType.SUCCESS, "Pizza " + formPizza.getName() + " creata!"));
+
+        model.addAttribute("ingredientList", ingredientRepository.findAll());
         return "redirect:/pizza";
     }
 
@@ -73,6 +81,7 @@ public class PizzaController {
 
         Pizza pizza = getPizzaById(id);
         model.addAttribute("pizza", pizza);
+        model.addAttribute("ingredientList", ingredientRepository.findAll());
         return "pizza/pizza_edit";
 
     }
@@ -81,7 +90,8 @@ public class PizzaController {
     public String doEdit(@PathVariable Integer id,
                          @Valid @ModelAttribute("pizza") Pizza formPizza,
                          BindingResult bindingResult,
-                         RedirectAttributes redirectAttributes) {
+                         RedirectAttributes redirectAttributes,
+                         Model model) {
         Pizza pizza = getPizzaById(id);
 
 
@@ -92,6 +102,7 @@ public class PizzaController {
         pizzaRepository.save(formPizza);
         redirectAttributes.addFlashAttribute("message", new AlertMessage(AlertMessageType.SUCCESS, "Pizza " + formPizza.getName() + " modificata!"));
 
+        model.addAttribute("ingredientList", ingredientRepository.findAll());
         return "redirect:/pizza";
     }
 

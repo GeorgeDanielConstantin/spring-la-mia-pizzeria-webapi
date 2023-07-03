@@ -63,12 +63,23 @@
                 </ul>
             </div>
         </div>
-        <div class="col-12 mt-3">
-            <button class="btn btn-primary" type="submit">Save</button>
-            <a class="btn btn-primary" th:href="@{/pizza}">Cancel</a>
+        <div class="col-6">
+            <h3>Ingredienti</h3>
+            <div class="form-check" th:each="cat : ${ingredienList}">
+                <label>
+                    <input class="form-check-input" th:field="*{ingredients}" th:id="|ingredient_${ingredient.id}|"
+                           th:value="${ingredient.id}"
+                           type="checkbox">
+                </label>
+                <label class="form-check-label" th:for="|ingredient_${ingredient.id}|" th:text="${ingredient.name}">
+                </label>
+            </div>
+            <div class="col-12 mt-3">
+                <button class="btn btn-primary" type="submit">Save</button>
+                <a class="btn btn-primary" th:href="@{/pizza}">Cancel</a>
+            </div>
         </div>
     </form>
-
 </div>
 
 </body>
