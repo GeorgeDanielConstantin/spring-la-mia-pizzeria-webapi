@@ -1,5 +1,6 @@
 package org.lessons.springlamiapizzeriacrud.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
@@ -33,6 +34,7 @@ public class Pizza {
     @Column(nullable = false)
     private BigDecimal price;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "pizza", cascade = {CascadeType.REMOVE})
     private List<Discount> discounts = new ArrayList<>();
 

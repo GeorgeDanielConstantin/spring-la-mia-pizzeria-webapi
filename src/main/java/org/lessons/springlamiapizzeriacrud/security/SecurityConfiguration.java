@@ -36,12 +36,14 @@ public class SecurityConfiguration {
                 .requestMatchers("/ingredients").hasAuthority("ADMIN")
                 .requestMatchers("/pizzas/edit/**").hasAuthority("ADMIN")
                 .requestMatchers("/pizzas/create").hasAuthority("ADMIN")
-                .requestMatchers(HttpMethod.POST).hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/pizza/**").hasAuthority("ADMIN")
                 .requestMatchers("/pizzas/**").hasAnyAuthority("ADMIN", "USER")
-                .requestMatchers("/ingredients/**").hasAuthority("ADMIN")
+                .requestMatchers("/discounts    /**").hasAuthority("ADMIN")
                 .requestMatchers("/**").permitAll()
                 .and().formLogin()
                 .and().logout();
+
+        http.csrf().disable();
         return http.build();
 
     }

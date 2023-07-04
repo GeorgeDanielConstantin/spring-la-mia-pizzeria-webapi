@@ -18,7 +18,7 @@
     <hr>
 
     <div class="d-flex justify-content-between align-items-center my-3">
-        <a class="btn btn-primary" th:href="@{/pizza/create}">Add Pizza</a>
+        <a class="btn btn-primary" sec:authorize="hasAuthority('ADMIN')" th:href="@{/pizza/create}">Add Pizza</a>
         <div>
             <form method="GET" th:action="@{/pizza}">
                 <div class="input-group">
@@ -54,7 +54,8 @@
                         class="fa-solid fa-pizza-slice"></i></a>
                 <a class="btn btn-primary me-1" th:href="@{|/pizza/edit/${pizza.id}|}"><i
                         class="fa-solid fa-pen-to-square"></i></a>
-                <form method="POST" th:action="@{|/pizza/delete/${pizza.id}|}">
+                <form method="post" sec:authorize="hasAuthority('ADMIN')"
+                      th:action="@{|/pizzas/delete/${pizza.id}|}">
                     <button class="btn btn-primary" type="submit"><i class="fa-solid fa-trash-can"></i></button>
                 </form>
             </td>

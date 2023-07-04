@@ -7,6 +7,9 @@ import org.lessons.springlamiapizzeriacrud.model.Pizza;
 import org.lessons.springlamiapizzeriacrud.repository.IngredientRepository;
 import org.lessons.springlamiapizzeriacrud.repository.PizzaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -30,13 +32,16 @@ public class PizzaController {
     @GetMapping
     public String list(
             @RequestParam(name = "keyword", required = false) String searchString,
-            Model model) {
-        List<Pizza> pizzas;
+            Model model,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "2") int size) {
+        Page<Pizza> pizzas;
+        Pageable pageable = PageRequest.of(page, size);
 
         if (searchString == null || searchString.isBlank()) {
-            pizzas = pizzaRepository.findAll();
+            pizzas = pizzaRepository.findAll(pageable);
         } else {
-            pizzas = pizzaRepository.findByNameContainingIgnoreCase(searchString);
+            pizzas = pizzaRepository.findByNameContainingIgnoreCase(searchString, pageable);
         }
 
         model.addAttribute("pizzasList", pizzas);

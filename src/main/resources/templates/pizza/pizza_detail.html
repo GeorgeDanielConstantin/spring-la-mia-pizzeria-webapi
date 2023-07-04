@@ -45,10 +45,12 @@
                 <td th:text="*{#temporals.format(startDate, 'dd/MM/yyyy')}"></td>
                 <td th:text="*{#temporals.format(endDate, 'dd/MM/yyyy')}"></td>
                 <td class="d-flex align-items-center">
-                    <a class="btn btn-primary me-1" th:href="@{|/discount/edit/*{id}|}"><i
+                    <a class="btn btn-primary me-1" sec:authorize="hasAuthority('ADMIN')"
+                       th:href="@{|/discount/edit/*{id}|}"><i
                             class="fa-solid fa-pen-to-square"></i></a>
                     <form
                             method="post"
+                            sec:authorize="hasAuthority('ADMIN')"
                             th:action="@{|/discount/delete/*{id}|}"
                     >
                         <button class="btn btn-primary" type="submit"><i class="fa-solid fa-trash-can"></i>
