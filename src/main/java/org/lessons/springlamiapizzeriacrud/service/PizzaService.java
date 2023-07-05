@@ -1,12 +1,15 @@
 package org.lessons.springlamiapizzeriacrud.service;
 
+import org.lessons.springlamiapizzeriacrud.dto.PizzaForm;
 import org.lessons.springlamiapizzeriacrud.model.Pizza;
 import org.lessons.springlamiapizzeriacrud.repository.PizzaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @Service
@@ -14,6 +17,35 @@ public class PizzaService {
 
     @Autowired
     PizzaRepository pizzaRepository;
+
+    public Pizza create(PizzaForm pizzaForm) {
+        Pizza pizza = mapPizzaFormToPizza(pizzaForm);
+        return create(pizza);
+    }
+
+    private Pizza mapPizzaFormToPizza(PizzaForm pizzaForm) {
+        Pizza pizza = new Pizza();
+        pizza.setId(pizzaForm.getId());
+        pizza.setName(pizzaForm.getName());
+        pizza.setDescription(pizza.getDescription());
+        pizza.setPrice(pizza.getPrice());
+        pizza.setIngredients(pizza.getIngredients());
+        pizza.setImgUrl(multipartFileToByteArray(pizzaForm.getImgUrl()));
+        return pizza;
+    }
+
+    private byte[] multipartFileToByteArray(MultipartFile mpf) {
+        byte[] bytes = null;
+        if (mpf != null && !mpf.isEmpty()) {
+            try {
+                bytes = mpf.getBytes();
+            } catch (IOException e) {
+                e.printStackTrace();
+
+            }
+        }
+        return bytes;
+    }
 
     public Page<Pizza> getAll(Optional<String> keywordOpt, Pageable pageable) {
         if (keywordOpt.isEmpty()) {

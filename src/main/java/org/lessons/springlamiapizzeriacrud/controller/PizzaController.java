@@ -1,11 +1,13 @@
 package org.lessons.springlamiapizzeriacrud.controller;
 
 import jakarta.validation.Valid;
+import org.lessons.springlamiapizzeriacrud.dto.PizzaForm;
 import org.lessons.springlamiapizzeriacrud.messages.AlertMessage;
 import org.lessons.springlamiapizzeriacrud.messages.AlertMessageType;
 import org.lessons.springlamiapizzeriacrud.model.Pizza;
 import org.lessons.springlamiapizzeriacrud.repository.IngredientRepository;
 import org.lessons.springlamiapizzeriacrud.repository.PizzaRepository;
+import org.lessons.springlamiapizzeriacrud.service.PizzaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,8 +26,9 @@ import java.util.Optional;
 @RequestMapping("/pizza")
 public class PizzaController {
     @Autowired
+    PizzaService pizzaService;
+    @Autowired
     private PizzaRepository pizzaRepository;
-
     @Autowired
     private IngredientRepository ingredientRepository;
 
@@ -60,21 +63,23 @@ public class PizzaController {
 
     @GetMapping("/create")
     public String create(Model model) {
-        model.addAttribute("pizza", new Pizza());
+        model.addAttribute("pizza", new PizzaForm());
         model.addAttribute("ingredientList", ingredientRepository.findAll());
         return "/pizza/pizza_edit";
     }
 
     @PostMapping("/create")
-    public String store(@Valid @ModelAttribute("pizza") Pizza formPizza,
+    public String store(@Valid @ModelAttribute("pizza") PizzaForm formPizza,
                         BindingResult bindingResult,
                         RedirectAttributes redirectAttributes,
                         Model model) {
+        if (!bindingResult.hasErrors()) {
+            pizzaService.create(formPizza);
+        }
 
         if (bindingResult.hasErrors()) {
             return "/pizza/pizza_edit";
         }
-        pizzaRepository.save(formPizza);
         redirectAttributes.addFlashAttribute("message", new AlertMessage(AlertMessageType.SUCCESS, "Pizza " + formPizza.getName() + " creata!"));
 
         model.addAttribute("ingredientList", ingredientRepository.findAll());

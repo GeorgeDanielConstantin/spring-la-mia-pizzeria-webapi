@@ -25,9 +25,9 @@ public class Pizza {
     @NotBlank(message = "La descrizione non può essere nulla")
     private String description;
 
-    @NotBlank(message = "L'immagine non può essere nulla")
-    @Column(nullable = false)
-    private String imgUrl;
+    @Lob
+    @Column(length = 16777215)
+    private byte[] imgUrl;
 
     @NotNull(message = "Il prezzo non può essere nullo")
     @DecimalMin(value = "0.0", inclusive = false)
@@ -87,11 +87,11 @@ public class Pizza {
         this.description = description;
     }
 
-    public String getImgUrl() {
+    public byte[] getImgUrl() {
         return imgUrl;
     }
 
-    public void setImgUrl(String imgUrl) {
+    public void setImgUrl(byte[] imgUrl) {
         this.imgUrl = imgUrl;
     }
 
